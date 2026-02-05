@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="Images/InfraVertex-Logo.png" type="image/png" />
+<title>InfraVertex</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<style>
+:root{
+    --cyan:#00e5ff;   /* Couleur principale (accent visuel) */
+    --bg:#0b0d12;     /* Couleur de fond globale */
+}
+
+/* Reset + police globale */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Segoe UI",Arial,sans-serif
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  background:var(--bg);
+  color:#fff;
+  overflow-x:hidden;
+  scroll-snap-type:y proximity;
+}
+
+/* Sections principales */
+section{
+  padding:90px 10%;
+  scroll-snap-align:start;
+}
+
+h1,h2,h3{color:var(--cyan)}
+p{opacity:.85;line-height:1.7}
+
+/* =========================================================
+   INDICATEUR DE SCROLL (BARRE EN HAUT DE PAGE)
+========================================================= */
+#scroll-indicator{
+  position:fixed;
+  top:0;
+  left:0;
+  height:4px;
+  width:0;
+  background:var(--cyan);
+  z-index:9999;
+}
+
+/* =========================================================
+   SECTION HERO (INTRODUCTION)
+========================================================= */
+.hero{
+  text-align:center;
+  padding:130px 10%;
+}
+.hero h1{
+  font-size:clamp(2.8rem,5vw,3.5rem)
+}
+.hero p{
+  max-width:900px;
+  margin:15px auto;
+  font-size:18px
+}
+
+/* =========================================================
+   TITRES DE SECTIONS
+========================================================= */
+.section-title{
+  font-size:clamp(2.2rem,4vw,3rem);
+  text-align:center;
+  margin-bottom:40px;
+}
+
+/* =========================================================
+   LISTES EN GRILLE (PUBLIC, PROCESSUS, ETC.)
+========================================================= */
+.list{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:20px;
+}
+.list div{
+  background:#111420;
+  padding:22px;
+  border-radius:14px;
+  border:1px solid #1f2433;
+}
+
+/* =========================================================
+   ANIMATIONS DE RÉVÉLATION AU SCROLL
+========================================================= */
+.reveal{
+  opacity:0;
+  transform:translateY(40px);
+  transition:opacity .8s ease, transform .8s ease;
+}
+.reveal.active{
+  opacity:1;
+  transform:translateY(0);
+}
+/* =========================================================
+   OFFRES AVEC VIDÉO BACKGROUND
+========================================================= */
+
+.offer-video{
+  overflow:hidden;
+}
+
+.offer-bg-video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:-1;
+  filter:brightness(0.75) contrast(1.1);
+}
+
+
+/* =========================================================
+   SECTIONS OFFRES (FULL SCREEN AVEC IMAGES)
+========================================================= */
+#offres{padding:0}
+
+.offer{
+  min-height:100vh;
+  position:relative;
+  display:flex;
+  align-items:flex-end;
+  background-size:cover;
+  background-position:center;
+}
+
+/* Overlay sombre pour lisibilité du texte */
+.offer::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    to top,
+    rgba(0,0,0,0.9) 0%,
+    rgba(0,0,0,0.65) 35%,
+    rgba(0,0,0,0.25) 65%,
+    transparent 100%
+  );
+}
+
+.offer-content{
+  position:relative;
+  padding:70px 10%;
+  max-width:760px;
+}
+.offer-content h2{
+  font-size:clamp(1.8rem,4vw,2.4rem)
+}
+
+/* =========================================================
+   SECTION CONTACT & BOUTONS INTERACTIFS
+========================================================= */
+.contact{text-align:center;}
+.contact-icon {
+  width: 22px;
+  height: 22px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+
+
+.contact-buttons{
+  display:flex;
+  flex-wrap:wrap;
+  gap:20px;
+  justify-content:center;
+}
+
+.contact-btn{
+  background:#111420;
+  border:1px solid #1f2433;
+  color:#fff;
+  padding:18px 26px;
+  border-radius:16px;
+  cursor:pointer;
+  transition:all .35s ease;
+  overflow:hidden;
+  min-width:220px;
+}
+
+/* Texte secondaire révélé au hover */
+.contact-btn span{
+  display:block;
+  margin-top:10px;
+  opacity:0;
+  max-height:0;
+  transition:.35s;
+}
+
+.contact-btn:hover{
+  transform:scale(1.05);
+  border-color:var(--cyan);
+}
+.contact-btn:hover span{
+  opacity:1;
+  max-height:60px
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+footer{
+  text-align:center;
+  padding:50px;
+  opacity:.6
+}
+
+/* =========================================================
+   RESPONSIVE MOBILE
+========================================================= */
+@media(max-width:768px){
+  section{
+    padding:70px 7%;
+  }
+  .offer-content{
+    padding:50px 7%;
+  }
+}
+@media (max-width:768px) {
+  .reveal {
+    opacity: 1 ;
+    transform: none ;
+    transition: none ;
+  }
+}
+
+@media(max-width:768px){
+  body{
+    scroll-snap-type:none;
+  }
+}
+
+@media(max-width:768px){
+  .contact-btn span{
+    opacity:1;
+    max-height:none;
+  }
+}
+@media(max-width:768px){
+  .offer-bg-video{
+    object-fit:cover;
+    object-position:7% center;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- Barre de progression du scroll -->
+<div id="scroll-indicator"></div>
+
+<!-- =========================================================
+     HERO
+========================================================= -->
+<section class="hero reveal reveal-left">
+<h1>Formation Réseaux & Cybersécurité</h1>
+<p>Formation live en ligne, environnements émulés, labs pratiques et explications professionnelles.</p>
+<p>VMware, EVE-NG, Windows Client & Server, Cybersécurité et scénarios réels d’entreprise.</p>
+</section>
+
+<!-- =========================================================
+     PUBLIC CONCERNÉ
+========================================================= -->
+<section class="reveal reveal-right">
+<h2 class="section-title">Public concerné</h2>
+<div class="list">
+<div>Administrateur Réseaux</div>
+<div>Chef de projets réseaux</div>
+<div>Étudiant TS Administration Réseaux</div>
+<div>Ingénieur Réseaux & Cybersécurité</div>
+</div>
+</section>
+
+<!-- =========================================================
+     À PROPOS
+========================================================= -->
+<section class="reveal reveal-left">
+<h2 class="section-title">À propos de moi</h2>
+<p>Ingénieur Réseaux et Cybersécurité passionné par la sécurité offensive et défensive, avec une expertise en infrastructures complexes, audit et tests de pénétration. Mon approche repose sur des environnements émulés proches de la réalité, loin des simulations simplifiées.</p>
+<p>Formations professionnelles : CCNA 200-301, CCNP ENCOR 350-401, CCNP ENARSI 300-410.</p>
+<p>Technicien Supérieur en Systèmes Numériques – option Informatique & Réseaux.  
+</section>
+
+<!-- =========================================================
+     PROPOSITION DE VALEUR
+========================================================= -->
+<section class="reveal reveal-right">
+<h2 class="section-title">Ce que je propose</h2>
+<p style="text-align:center;max-width:900px;margin:auto">
+Des formations orientées terrain, basées sur des labs concrets et des scénarios professionnels.
+</p>
+</section>
+
+<!-- =========================================================
+     OFFRES DE FORMATION
+========================================================= -->
+<section id="offres">
+
+<div class="offer reveal reveal-left" style="background-image:url('Images/eve-ng-1.png')">
+  <div class="offer-content">
+    <h2>EVE-NG – Environnements avancés</h2>
+    <p>Installation, configuration, ajout d’images, topologies complexes et astuces avancées.</p>
+  </div>
+</div>
+
+<div class="offer reveal reveal-right" style="background-image:url('Images/eve-ng-2.png')">
+  <div class="offer-content">
+    <h2>CCNA 200-301 – Cours & Labs</h2>
+    <p>Cours complets, révision ciblée et dizaines de labs pratiques sur EVE-NG.</p>
+  </div>
+</div>
+
+<div class="offer reveal reveal-left" style="background-image:url('Images/VMware-Interface.png')">
+  <div class="offer-content">
+    <h2>VMware – Virtualisation professionnelle</h2>
+    <p>Machines virtuelles, réseaux virtuels, snapshots et optimisation.</p>
+  </div>
+</div>
+
+<div class="offer reveal reveal-right" style="background-image:url('Images/Windows-Server-2025.png')">
+  <div class="offer-content">
+    <h2>Administration des postes clients et serveurs</h2>
+    <p>Windows 11 : Gestion, NTFS, Partage...</p>
+    <p>Windows Server 2025 : DNS, DHCP, Routage, IIS, ADDS et logique entreprise.</p>
+  </div>
+</div>
+
+<div class="offer offer-video reveal reveal-right">
+  <video class="offer-bg-video" autoplay muted loop playsinline>
+    <source src="Images/Kali-Macof.mp4" type="video/mp4">
+  </video>
+
+  <div class="offer-content">
+    <h2>Cybersécurité & Pentesting</h2>
+    <p>Comprendre les attaques, leurs impacts et sécuriser l’infrastructure.</p>
+  </div>
+</div>
+
+
+</section>
+
+<!-- =========================================================
+     FONCTIONNEMENT
+========================================================= -->
+<section class="reveal reveal-right">
+<h2 class="section-title">Comment ça marche</h2>
+<div class="list">
+<div>Cours live</div>
+<div>1440p / 60FPS</div>
+<div>Meet & Discord</div>
+<div>Contact direct</div>
+</div>
+</section>
+
+<!-- =========================================================
+     TARIFS & PROGRAMMES (POPUP)
+========================================================= -->
+<section class="reveal reveal-left">
+<h2 class="section-title">Tarifs et Programme</h2>
+
+<div class="list">
+<div class="contact-btn" onclick="openTarif('ccna')">CCNA 200-301</div>
+<div class="contact-btn" onclick="openTarif('vmware')">VMware</div>
+<div class="contact-btn" onclick="openTarif('eve')">EVE-NG</div>
+<div class="contact-btn" onclick="openTarif('admin')">Administration des postes clients et serveurs</div>
+<div class="contact-btn" onclick="openTarif('cyber')">Cybersécurité & Pentesting</div>
+</div>
+</section>
+
+<!-- =========================================================
+     CONTACT
+========================================================= -->
+<section class="contact reveal reveal-left">
+<h2 class="section-title">Contact</h2>
+<div class="contact-buttons">
+<div class="contact-btn"><img src="Images/Email.svg" alt="Email" class="contact-icon">
+      Email
+      <span>InfraVertex.Training@gmail.com</span>
+    </div>
+<div class="contact-btn"><img src="Images/Phone.svg" alt="Téléphone" class="contact-icon">Téléphone<span>+213 781 72 74 18</span>
+</div><div class="contact-btn" onclick="window.open('https://discord.gg/wzmdaR4ZfX','_blank')"> <img src="Images/Logo.png" alt="Discord" class="contact-icon">
+Discord <span>InfraVertex</span></div>
+</section>
+
+<footer>© InfraVertex</footer>
+
+<!-- =========================================================
+     POPUP TARIFS (MODAL)
+========================================================= -->
+<div id="tarif-popup" class="tarif-overlay">
+  <div class="tarif-modal">
+
+    <div class="tarif-header">
+      <h3 id="tarif-title"></h3>
+      <div class="tarif-close-btn" onclick="closeTarif()">✕</div>
+    </div>
+
+    <div class="tarif-body" id="tarif-content"></div>
+
+    <div class="tarif-actions">
+      <div class="contact-btn" onclick="closeTarif()">Fermer</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- =========================================================
+     STYLES SPÉCIFIQUES AU POPUP TARIFS
+========================================================= -->
+<style>
+@keyframes modalIn{
+  from{
+    transform:translate(-50%,-40%) scale(.85);
+    opacity:0;
+  }
+  to{
+    transform:translate(-50%,-50%) scale(1);
+    opacity:1;
+  }
+}
+
+.tarif-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  display:none;
+  z-index:99999;
+}
+
+.tarif-modal{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:90%;
+  max-width:820px;
+  max-height:85vh;
+  background:#0f1320;
+  border:1px solid #1f2433;
+  border-radius:22px;
+  padding:32px 36px;
+  animation:modalIn .55s cubic-bezier(.22,1,.36,1);
+  display:flex;
+  flex-direction:column;
+}
+
+.tarif-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:22px;
+}
+
+.tarif-header h3{
+  font-size:1.9rem;
+  color:var(--cyan);
+}
+
+.tarif-close-btn{
+  background:#111420;
+  border:1px solid #1f2433;
+  border-radius:14px;
+  padding:10px 16px;
+  cursor:pointer;
+  transition:.3s;
+}
+.tarif-close-btn:hover{
+  border-color:var(--cyan);
+  transform:scale(1.05);
+}
+
+.tarif-body{
+  overflow-y:auto;
+  padding-right:10px;
+}
+
+.tarif-section{
+  margin-bottom:30px;
+}
+
+.tarif-section h4{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:1.25rem;
+  color:var(--cyan);
+  margin-bottom:12px;
+}
+
+.tarif-section p,
+.tarif-section li{
+  opacity:.9;
+  line-height:1.8;
+}
+
+.tarif-section ul{
+  padding-left:18px;
+}
+
+.tarif-section ul li{
+  margin-bottom:6px;
+}
+
+.tarif-actions{
+  display:flex;
+  justify-content:center;
+  gap:18px;
+  margin-top:25px;
+}
+</style>
+
+<!-- =========================================================
+     JAVASCRIPT – LOGIQUE D’INTERACTION
+========================================================= -->
+<script>
+/* Animation de révélation au scroll */
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add('active');
+    }else{
+      entry.target.classList.remove('active');
+    }
+  })
+},{threshold:.15});
+reveals.forEach(r=>observer.observe(r));
+
+/* Mise à jour de la barre de progression du scroll */
+let ticking=false;
+window.addEventListener('scroll',()=>{
+  if(!ticking){
+    window.requestAnimationFrame(()=>{
+      const h=document.documentElement;
+      const percent=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;
+      document.getElementById('scroll-indicator').style.width=percent+'%';
+      ticking=false;
+    });
+    ticking=true;
+  }
+});
+
+
+/* Ouverture du popup tarif */
+function openTarif(type){
+
+  const data={
+
+    ccna:{
+  title:"CCNA 200-301 – Offres de formation",
+  content:`
+    <div class="tarif-section">
+      <h3>Offre 1 : Révision ciblée / LAB avancé</h3>
+      <p><strong>Tarif :</strong> 2000 DA / 2 heures</p>
+    </div>
+
+    <div class="tarif-section">
+      <h4>Public concerné</h4>
+      <ul>
+        <li>Étudiants en révision</li>
+        <li>Candidats à la certification CCNA 200-301</li>
+        <li>Ingénieures et Techniciens supérieurs réseau</li>
+        <li>Chefs de projets réseaux</li>
+      </ul>
+    </div>
+ 
+    <div class="tarif-section">
+      <h3>Offre 2 : CCNA 200-301 – Cours simplifié, support détaillé & LAB pratiques</h3>
+      <p>
+        <strong>Durée :</strong> ≃ 60 heures<br/>
+        <strong>Tarif :</strong> 30 000 DA<br/>
+        <strong>Temps estimé :</strong> ≃ 3 mois
+      </p>
+    </div>
+
+    <div class="tarif-section">
+      <h4>Contenu</h4>
+      <ul>
+        <li>Fondamentaux des réseaux</li>
+        <li>Routage, IPv4 et IPv6</li>
+        <li>Troubleshooting réseau</li>
+        <li>Commutation & routage avancés</li>
+        <li>Redondance L2 et L3</li>
+        <li>Services réseaux</li>
+        <li>WAN & Internet</li>
+        <li>Conception & architecture réseau</li>
+        <li>Fondamentaux de la sécurité réseaux</li>
+        <li>Gestion et surveillance réseau</li>
+      </ul>
+    </div>
+  `
+},
+
+
+
+    vmware:{
+  title:"VMware – Virtualisation professionnelle",
+  content:`
+    <div class="tarif-section">
+      <h4>Tarif</h4>
+      <p>3000 DA – séance unique de <strong>120 minutes</strong></p>
+    </div>
+
+    <div class="tarif-section">
+      <h4>Programme</h4>
+      <ul>
+        <li>Cas d’usage professionnels</li>
+        <li>Interface VMware</li>
+        <li>Images, machines virtuelles & réseaux</li>
+        <li>Snapshots & bonnes pratiques</li>
+        <li>Optimisation & troubleshooting avancé</li>
+      </ul>
+    </div>
+
+    <div class="tarif-section">
+      <h4>Objectif</h4>
+      <p>
+        Maîtriser VMware et gérer des environnements
+        <strong>virtualisés professionnels</strong>
+      </p>
+    </div>
+  `
+},
+
+
+    eve:{
+      title:"EVE-NG – Environnements avancés",
+      content:`
+        <div class="tarif-section">
+          <h4>Tarif</h4>
+          <p>2500 DA / heure<br>
+          Formation complète : <strong>15000 DA</strong></p>
+        </div>
+        <div class="tarif-section">
+          <h4>Programme</h4>
+          <ul>
+            <li>1ʳᵉ heure : Introduction et installation d’EVE-NG</li>
+            <li>2ᵉ heure : Ajout des images (IOL, Dynamips, QEMU)</li>
+            <li>3ᵉ heure : Génération de la licence IOURC avec Python + tests des images ajoutées</li>
+            <li>4ᵉ heure : Interface, design, optimisation, création du premier lab, clonage et sauvegarde</li>
+            <li>5ᵉ heure : Interfaces virtuelles et interconnexion de plusieurs machines virtuelles avec EVE-NG</li>
+            <li>6ᵉ heure : Troubleshooting avancé, problèmes récurrents et méthodes professionnelles rarement documentées</li>
+          </ul>
+        </div>
+        <div class="tarif-section">
+          <h4>Objectif</h4>
+          <p>Être totalement autonome et opérationnel sur EVE-NG<br>
+          <strong>Satisfait ou remboursé</strong></p>
+        </div>
+      `
+    },
+
+    admin:{
+  title:"Administration des postes clients et serveurs",
+  content:`
+    <div class="tarif-section">
+      <h4>Tarif</h4>
+      <p>2000 DA / 2 heures</p>
+      <p>Volume horaire : ≃20 heures</p>
+
+    </div>
+
+    <div class="tarif-section">
+      <h4>Client – Windows 11 Pro</h4>
+      <ul>
+        <li>Installation et activation</li>
+        <li>Modification du nom de l’ordinateur</li>
+        <li>Configuration de l’adresse IP</li>
+        <li>Comptes utilisateurs et groupes</li>
+        <li>Stratégies de sécurité locale</li>
+        <li>Gestion des autorisations NTFS</li>
+        <li>Compression et chiffrement</li>
+        <li>Gestion des quotas disque</li>
+        <li>Partages réseau</li>
+      </ul>
+    </div>
+
+    <div class="tarif-section">
+      <h4>Serveur – Windows Server 2025</h4>
+      <ul>
+        <li>Installation et activation</li>
+        <li>DNS</li>
+        <li>DHCP</li>
+        <li>WINS</li>
+        <li>Routage</li>
+        <li>WDS</li>
+        <li>IIS</li>
+        <li>Active Directory Domain Services (ADDS)</li>
+      </ul>
+    </div>
+
+    <div class="tarif-section">
+      <h4>Objectif</h4>
+      <p>
+        Déployer, administrer et sécuriser un environnement
+        <strong>client-serveur</strong> en conditions réelles d’entreprise
+      </p>
+    </div>
+  `
+},
+
+
+    cyber:{
+  title:"Cybersécurité & Pentesting",
+  content:`
+    <div class="tarif-section">
+      <h4>Tarif</h4>
+      <p>2500 DA / heure</p>
+    </div>
+
+    <div class="tarif-section">
+      <h4>Programme</h4>
+      <ul>
+        <li>Introduction à la cybersécurité</li>
+        <li>Typologie des menaces et attaques informatiques</li>
+        <li>Le piratage informatique : profils, objectifs et méthodologies</li>
+        <li>Bases de la cryptographie</li>
+        <li>Concepts des attaques (TP : visualisation de l’impact des attaques en direct)</li>
+        <li>Sécurisation des systèmes face aux attaques</li>
+        <li>Tests d’intrusion après sécurisation (Pentesting)</li>
+      </ul>
+    </div>
+
+    <div class="tarif-section">
+      <h4>Objectifs</h4>
+      <ul>
+        <li>Comprendre les principales menaces cyber</li>
+        <li>Identifier les vulnérabilités</li>
+        <li>Mettre en place des mesures de protection</li>
+        <li>Réagir correctement à un incident de sécurité</li>
+      </ul>
+    </div>
+  `
+},
+
+  };
+
+  if(!data[type]) return;
+
+  document.getElementById("tarif-title").innerText = data[type].title;
+  document.getElementById("tarif-content").innerHTML = data[type].content;
+  document.getElementById("tarif-popup").style.display = "block";
+}
+
+/* Fermeture du popup tarif */
+function closeTarif(){
+  document.getElementById("tarif-popup").style.display = "none";
+}
+</script>
+
+</body>
+</html>
